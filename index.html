@@ -106,9 +106,11 @@ body {
 .display-mix b { font-weight: 600; font-style: normal; }
 .display-mix i { font-weight: 300; font-style: italic; }
 
-.reveal.in { animation: revealIn .65s ease-out both; }
+.reveal { opacity: 0; transform: translateY(18px); }
+.reveal.in { animation: revealIn .65s ease-out forwards; }
+.reveal.done { opacity: 1; transform: none; animation: none; }
 @keyframes revealIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce){ .reveal.in { animation: none; } }
+@media (prefers-reduced-motion: reduce){ .reveal, .reveal.in { opacity: 1; transform: none; animation: none; } }
 
 /* ============ NAV ============ */
 .nav {
