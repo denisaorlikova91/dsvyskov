@@ -106,10 +106,8 @@ body {
 .display-mix b { font-weight: 600; font-style: normal; }
 .display-mix i { font-weight: 300; font-style: italic; }
 
-/* reveal — ALWAYS visible at rest; entrance animation is pure enhancement.
-   No fill-mode, so an idle/frozen animation never holds the hidden frame. */
-.reveal.in { animation: revealIn .9s cubic-bezier(.2,.8,.2,1); }
-@keyframes revealIn { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+.reveal.in { animation: revealIn .65s ease-out both; }
+@keyframes revealIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce){ .reveal.in { animation: none; } }
 
 /* ============ NAV ============ */
@@ -693,14 +691,14 @@ cítí jako doma.</h1>
       <h2 class="display-mix">Jak vypadá náš den</h2>
       <p>Časy bereme volně — vždy podle nálady a tempa skupiny.</p>
     </div>
-    <div class="timeline">
-      <div class="tl-row reveal"><div class="tl-time">6:30</div><span class="tl-dot"></span><div class="tl-body"><h3>Scházíme se</h3><p>Příchod a volná hra, než dorazí všichni kamarádi.</p></div></div>
-      <div class="tl-row reveal"><div class="tl-time">8:30</div><span class="tl-dot"></span><div class="tl-body"><h3>Ranní kruh</h3><p>Přivítáme se, zazpíváme si a řekneme si, co nás dnes čeká.</p></div></div>
-      <div class="tl-row reveal"><div class="tl-time">9:00</div><span class="tl-dot"></span><div class="tl-body"><h3>Dopolední blok</h3><p>Tvoření, hra a objevování. Za pěkného počasí trávíme čas na zahradě.</p></div></div>
-      <div class="tl-row reveal"><div class="tl-time">11:30</div><span class="tl-dot"></span><div class="tl-body"><h3>Oběd</h3><p>Společně u stolu, bez spěchu a s ohledem na chuť každého.</p></div></div>
-      <div class="tl-row reveal"><div class="tl-time">12:15</div><span class="tl-dot"></span><div class="tl-body"><h3>Odpočinek</h3><p>Čteme pohádku a ztišíme se. Kdo potřebuje, spí; ostatní odpočívají u klidné činnosti.</p></div></div>
-      <div class="tl-row reveal"><div class="tl-time">14:00</div><span class="tl-dot"></span><div class="tl-body"><h3>Svačina a odpolední hra</h3><p>Doplníme síly a vrhneme se na hru — dle počasí uvnitř nebo venku.</p></div></div>
-      <div class="tl-row reveal"><div class="tl-time">15:00</div><span class="tl-dot"></span><div class="tl-body"><h3>Vyzvedávání</h3><p>Při předání vám řekneme, jak se dnes dařilo. Otevřeno do 16:30.</p></div></div>
+    <div class="timeline reveal">
+      <div class="tl-row"><div class="tl-time">6:30</div><span class="tl-dot"></span><div class="tl-body"><h3>Scházíme se</h3><p>Příchod a volná hra, než dorazí všichni kamarádi.</p></div></div>
+      <div class="tl-row"><div class="tl-time">8:30</div><span class="tl-dot"></span><div class="tl-body"><h3>Ranní kruh</h3><p>Přivítáme se, zazpíváme si a řekneme si, co nás dnes čeká.</p></div></div>
+      <div class="tl-row"><div class="tl-time">9:00</div><span class="tl-dot"></span><div class="tl-body"><h3>Dopolední blok</h3><p>Tvoření, hra a objevování. Za pěkného počasí trávíme čas na zahradě.</p></div></div>
+      <div class="tl-row"><div class="tl-time">11:30</div><span class="tl-dot"></span><div class="tl-body"><h3>Oběd</h3><p>Společně u stolu, bez spěchu a s ohledem na chuť každého.</p></div></div>
+      <div class="tl-row"><div class="tl-time">12:15</div><span class="tl-dot"></span><div class="tl-body"><h3>Odpočinek</h3><p>Čteme pohádku a ztišíme se. Kdo potřebuje, spí; ostatní odpočívají u klidné činnosti.</p></div></div>
+      <div class="tl-row"><div class="tl-time">14:00</div><span class="tl-dot"></span><div class="tl-body"><h3>Svačina a odpolední hra</h3><p>Doplníme síly a vrhneme se na hru — dle počasí uvnitř nebo venku.</p></div></div>
+      <div class="tl-row"><div class="tl-time">15:00</div><span class="tl-dot"></span><div class="tl-body"><h3>Vyzvedávání</h3><p>Při předání vám řekneme, jak se dnes dařilo. Otevřeno do 16:30.</p></div></div>
     </div>
   </div>
 </section>
@@ -995,21 +993,22 @@ const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
 onScroll();
 window.addEventListener('scroll', onScroll, { passive: true });
 
-// reveal on scroll — entrance is enhancement only; content is visible at rest.
-// 'in' triggers a one-shot animation that removes itself on animationend, so it
-// can never stay stuck on the hidden first frame.
 const reveals = [...document.querySelectorAll('.reveal')];
-reveals.forEach((el, i) => {
-  el.style.animationDelay = (Math.min(i % 4, 3) * 90) + 'ms';
-  el.addEventListener('animationend', () => { el.classList.remove('in'); el.classList.add('done'); });
+reveals.forEach(el => {
+  el.addEventListener('animationend', () => { el.classList.remove('in'); el.classList.add('done'); }, { once: true });
 });
 function checkReveals() {
-  if (document.visibilityState === 'hidden') return; // never animate (=hide) while backgrounded
+  if (document.visibilityState === 'hidden') return;
   const vh = window.innerHeight || document.documentElement.clientHeight;
+  let batch = 0;
   for (const el of reveals) {
     if (el.classList.contains('in') || el.classList.contains('done')) continue;
     const r = el.getBoundingClientRect();
-    if (r.top < vh * 0.92 && r.bottom > 0) el.classList.add('in');
+    if (r.top < vh * 0.88 && r.bottom > 0) {
+      el.style.animationDelay = (Math.min(batch, 3) * 80) + 'ms';
+      el.classList.add('in');
+      batch++;
+    }
   }
 }
 checkReveals();
