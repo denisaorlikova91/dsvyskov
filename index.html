@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
-<script src="image-slot.js"></script>
+<script src="image-slot.js" defer></script>
 <style>
 :root {
   /* Sunrise — paleta webu */
@@ -694,7 +694,7 @@ body {
   <span class="blob x2"></span>
   <div class="wrap">
     <div class="hero-grid">
-      <div class="hero-copy reveal">
+      <div class="hero-copy">
         <span class="eyebrow">DĚTSKÁ SKUPINA SUNRISE · VYŠKOV  </span>
         <h1 class="display-mix">Kde se malé děti
 cítí jako doma.</h1>
@@ -713,10 +713,11 @@ cítí jako doma.</h1>
           <img
             src="https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_800,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg"
             srcset="
-              https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_480,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg  480w,
-              https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_800,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg  800w,
+              https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_420,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg  420w,
+              https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_700,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg  700w,
+              https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_900,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg  900w,
               https://res.cloudinary.com/dgbfekflu/image/upload/f_auto,q_auto,w_1100,c_fill,g_auto,ar_4:5/v1781702204/IMG_6469_1_tibwoc.jpg 1100w"
-            sizes="(max-width: 640px) 100vw, (max-width: 880px) 420px, 50vw"
+            sizes="(max-width: 640px) calc(100vw - 64px), (max-width: 880px) 420px, 50vw"
             alt="Děti při hře v Sunrise"
             width="800" height="1000"
             style="width:100%;height:100%;object-fit:cover;display:block;"
@@ -736,6 +737,7 @@ cítí jako doma.</h1>
   </div>
 </header>
 
+<main>
 <!-- APPROACH -->
 <section class="approach" id="approach">
   <div class="wrap">
@@ -1033,6 +1035,7 @@ cítí jako doma.</h1>
   </div>
 </section>
 
+</main>
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="wrap">
@@ -1100,25 +1103,18 @@ const reveals = [...document.querySelectorAll('.reveal')];
 reveals.forEach(el => {
   el.addEventListener('animationend', () => { el.classList.remove('in'); el.classList.add('done'); }, { once: true });
 });
-function checkReveals() {
-  if (document.visibilityState === 'hidden') return;
-  const vh = window.innerHeight || document.documentElement.clientHeight;
+const revealObserver = new IntersectionObserver((entries) => {
   let batch = 0;
-  for (const el of reveals) {
-    if (el.classList.contains('in') || el.classList.contains('done')) continue;
-    const r = el.getBoundingClientRect();
-    if (r.top < vh * 0.88 && r.bottom > 0) {
-      el.style.animationDelay = (Math.min(batch, 3) * 80) + 'ms';
-      el.classList.add('in');
-      batch++;
-    }
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    const el = entry.target;
+    el.style.animationDelay = (Math.min(batch, 3) * 80) + 'ms';
+    el.classList.add('in');
+    revealObserver.unobserve(el);
+    batch++;
   }
-}
-checkReveals();
-window.addEventListener('scroll', checkReveals, { passive: true });
-window.addEventListener('resize', checkReveals);
-window.addEventListener('load', checkReveals);
-document.addEventListener('visibilitychange', checkReveals);
+}, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
+reveals.forEach(el => revealObserver.observe(el));
 </script>
 
 
