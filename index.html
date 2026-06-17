@@ -173,6 +173,57 @@ body {
 .nav-cta-light { background: var(--color-brand-marigold); color: var(--color-brand-teal-deep); }
 @media (max-width: 860px){ .nav-links a.link { display:none; } }
 
+/* ============ HAMBURGER + MOBILE MENU ============ */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 42px; height: 42px;
+  border: none; background: transparent; cursor: pointer;
+  gap: 5px; padding: 4px; flex-shrink: 0;
+}
+.nav-burger span {
+  display: block; width: 22px; height: 2px;
+  background: currentColor; border-radius: 2px;
+  transition: transform .3s ease, opacity .3s ease;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(252,239,231,.97);
+  backdrop-filter: blur(14px);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 40px 60px;
+  gap: 0;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .mlink {
+  font: 300 clamp(26px,7vw,38px)/1.2 var(--font-display);
+  color: var(--ink);
+  text-decoration: none;
+  padding: 13px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 12%, transparent);
+  width: 100%; text-align: center;
+  transition: color .2s;
+}
+.mobile-menu .mlink:last-of-type { border-bottom: none; }
+.mobile-menu .mlink:hover { color: var(--color-brand-marigold); }
+.mobile-menu .m-cta { margin-top: 32px; }
+
+@media (max-width: 860px) {
+  .nav-burger { display: flex; }
+  .nav .btn.nav-cta-light { display: none; }
+}
+
 /* ============ HERO ============ */
 .hero {
   background: var(--hero-ground);
@@ -612,13 +663,28 @@ body {
     <a class="link" href="#approach">Náš Přístup</a>
     <a class="link" href="#program">Den u nás</a>
     <a class="link" href="#spaces">Prostory</a>
-    <a class="link" href="#team">Náš tým</a>
+    <a class="link" href="#meals">Stravování</a>
     <a class="link" href="#tuition">Školné</a>
-    <a class="link" href="#steps">Zápis</a>
+    <a class="link" href="#faq">FAQ</a>
     <a class="link" href="#contact">Kontakt</a>
   </div>
   <a class="btn btn-accent nav-cta-light" href="https://forms.gle/XtgApHqa3PsnVxWQ7" target="_blank" rel="noopener">Zápis</a>
+  <button class="nav-burger" id="burger" aria-label="Otevřít menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigace">
+  <a class="mlink" href="#approach">Náš Přístup</a>
+  <a class="mlink" href="#program">Den u nás</a>
+  <a class="mlink" href="#spaces">Prostory</a>
+  <a class="mlink" href="#meals">Stravování</a>
+  <a class="mlink" href="#tuition">Školné</a>
+  <a class="mlink" href="#faq">FAQ</a>
+  <a class="mlink" href="#contact">Kontakt</a>
+  <a class="btn btn-accent m-cta" href="https://forms.gle/XtgApHqa3PsnVxWQ7" target="_blank" rel="noopener">Mám zájem o zápis</a>
+</div>
 
 <!-- HERO -->
 <header class="hero" id="top">
@@ -986,10 +1052,11 @@ cítí jako doma.</h1>
         <a href="#approach">Náš Přístup</a>
         <a href="#program">Den u nás</a>
         <a href="#spaces">Prostory</a>
-        <a href="#team">Náš tým</a>
+        <a href="#meals">Stravování</a>
         <a href="#tuition">Školné</a>
-        <a href="#steps">Zápis</a>
+        <a href="#faq">FAQ</a>
         <a href="#contact">Kontakt</a>
+        <a href="https://forms.gle/XtgApHqa3PsnVxWQ7" target="_blank" rel="noopener">Zápis</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -1005,6 +1072,23 @@ const nav = document.getElementById('nav');
 const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
 onScroll();
 window.addEventListener('scroll', onScroll, { passive: true });
+
+// hamburger menu
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobile-menu');
+function closeMenu() {
+  mobileMenu.classList.remove('open');
+  burger.classList.remove('open');
+  burger.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+burger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  burger.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', String(open));
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
 
 const reveals = [...document.querySelectorAll('.reveal')];
 reveals.forEach(el => {
