@@ -437,7 +437,7 @@ body {
 .tier.featured li::before { background-color: #fff; }
 .tier .btn { margin-top: auto; width: 100%; }
 .tier .pop { display:inline-block; font: 500 10px/1 var(--font-body); letter-spacing:.12em; text-transform:uppercase; background: #fff; color: #8A6516; padding:6px 12px; border-radius: 20px; margin-bottom: 16px; align-self:flex-start; }
-@media (max-width: 820px){ .tiers{ grid-template-columns: 1fr; } }
+@media (max-width: 820px){ .tiers{ grid-template-columns: 1fr !important; } }
 .pricing .note { text-align:center; font: 400 13.5px/1.6 var(--font-body); color:var(--muted-soft); margin-top: 34px; }
 
 /* ============ FOOTER / CONTACT ============ */
@@ -910,10 +910,16 @@ cítí jako doma.</h1>
       <span class="eyebrow">KOLIK TO STOJÍ</span>
       <h2 class="display-mix">Školné</h2>
     </div>
-    <div class="tiers" style="grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto;">
+    <div class="tiers" style="grid-template-columns: repeat(2, 1fr); max-width: 900px; margin-left: auto; margin-right: auto;">
       <div class="tier featured reveal" style="background-color: var(--ground);">
-        <div class="tag" style="color: var(--ink)">Měsíční školné</div>
-        <div class="price" style="color: var(--ink)">1 000 Kč<span style="color: var(--ink)"> / měsíc</span></div>
+        <div class="tag" style="color: var(--ink)">Dopolední docházka</div>
+        <div class="price" style="color: var(--ink)">2 500 Kč<span style="color: var(--ink)"> / měsíc</span></div>
+        <div class="desc" style="color: var(--ink)">Celodenní péče a program. Strava se hradí zvlášť dle skutečné docházky.</div>
+        <a class="btn btn-accent" href="https://forms.gle/XtgApHqa3PsnVxWQ7" target="_blank" rel="noopener">Mám zájem o zápis</a>
+      </div>
+      <div class="tier featured reveal" style="background-color: var(--ground);">
+        <div class="tag" style="color: var(--ink)">Celodenní docházka</div>
+        <div class="price" style="color: var(--ink)">3 000 Kč<span style="color: var(--ink)"> / měsíc</span></div>
         <div class="desc" style="color: var(--ink)">Celodenní péče a program. Strava se hradí zvlášť dle skutečné docházky.</div>
         <a class="btn btn-accent" href="https://forms.gle/XtgApHqa3PsnVxWQ7" target="_blank" rel="noopener">Mám zájem o zápis</a>
       </div>
